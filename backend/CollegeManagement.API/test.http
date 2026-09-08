@@ -1,0 +1,197 @@
+### Get all students
+GET http://localhost:5083/api/students
+
+###
+
+### Add student
+POST http://localhost:5083/api/students
+Content-Type: application/json
+
+{
+  "name": "Arun Kumar",
+  "registerNumber": "22CS101",
+  "department": "Computer Science",
+  "year": "Final Year",
+  "email": "arun@example.com",
+  "phone": "9876543210",
+  "cgpa": 8.7,
+  "skills": "React, Java",
+  "status": "Eligible"
+}
+
+### Get all placementdrives
+GET http://localhost:5083/api/placementdrives
+
+###
+
+### Add placementdrives
+POST http://localhost:5083/api/placementdrives
+Content-Type: application/json
+
+{
+  "company": "TCS",
+  "role": "Software Developer",
+  "package": "7.5 LPA",
+  "students": 120,
+  "date": "2026-09-15T00:00:00",
+  "openings": 25,
+  "status": "Active"
+}
+
+### Update placementdrives
+PUT http://localhost:5083/api/placementdrives/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "company": "TCS",
+  "role": "Full Stack Developer",
+  "package": "8.5 LPA",
+  "students": 150,
+  "date": "2026-09-20T00:00:00",
+  "openings": 30,
+  "status": "Active"
+}
+
+### Delete placementdrives
+DELETE  http://localhost:5083/api/placementdrives/1
+Content-Type: application/json
+
+
+### Add trainingprograms
+POST http://localhost:5083/api/trainingprograms
+Content-Type: application/json
+
+{
+  "name": "Full Stack Development",
+  "trainer": "Karthik",
+  "duration": "60 Days",
+  "startDate": "2026-08-01",
+  "students": 45,
+  "completion": 72,
+  "status": "Active"
+}
+
+### Add applications
+POST http://localhost:5083/api/applications
+Content-Type: application/json
+
+{
+  "studentId": 1,
+  "student": "Arun Kumar",
+  "registerNumber": "22CS101",
+  "company": "TCS",
+  "role": "Software Developer",
+  "package": "7.5 LPA",
+  "appliedDate": "2026-08-18",
+  "status": "Shortlisted"
+}
+
+### Add attendance
+POST http://localhost:5083/api/attendance
+Content-Type: application/json
+
+{
+  "studentId": 1,
+  "date": "2026-08-25",
+  "status": "Present"
+}
+
+### Update attendance
+PUT http://localhost:5083/api/attendance/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "studentId": 1,
+  "date": "2026-08-25",
+  "status": "Absent"
+}
+
+### Delete attendance
+DELETE  http://localhost:5083/api/attendance/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "studentId": 1,
+  "date": "2026-08-25",
+  "status": "Absent"
+}
+
+### Add trainingprograms
+POST http://localhost:5083/api/trainingprograms
+Content-Type: application/json
+
+{
+  "name": "Advanced React Development",
+  "trainer": "Arun",
+  "duration": "45 Days",
+  "startDate": "2026-09-01",
+  "students": 30,
+  "completion": 0,
+  "status": "Active"
+}
+
+### Update trainingprograms
+PUT http://localhost:5083/api/trainingprograms/3
+Content-Type: application/json
+
+{
+  "id": 3,
+  "name": "Advanced React Development",
+  "trainer": "Arun",
+  "duration": "60 Days",
+  "startDate": "2026-09-01",
+  "students": 35,
+  "completion": 25,
+  "status": "Active"
+}
+
+### Delete trainingprograms
+DELETE http://localhost:5083/api/trainingprograms/3
+
+### Add marks
+POST http://localhost:5083/api/marks
+Content-Type: application/json
+
+{
+  "studentId": 1,
+  "studentName": "Arun Kumar",
+  "registerNumber": "22CS101",
+  "subject": "Mathematics",
+  "marks": 85,
+  "percentage": "85%",
+  "grade": "A"
+}
+
+### Update marks
+PUT http://localhost:5083/api/marks/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "studentId": 1,
+  "studentName": "Arun Kumar",
+  "registerNumber": "22CS101",
+  "subject": "Mathematics",
+  "marks": 92,
+  "percentage": "92%",
+  "grade": "A+"
+}
+
+### Delete marks
+DELETE http://localhost:5083/api/marks/1
+
+###Add faculty
+POST http://localhost:5083/api/faculty
+Content-Type: application/json
+
+{
+  "name": "Dr. Priya Kumar",
+  "employeeId": "FAC001",
+  "department": "Computer Science",
+  "email": "priya.kumar@college.edu",
+  "phone": "9876543210",
+  "designation": "Assistant Professor"
+}
