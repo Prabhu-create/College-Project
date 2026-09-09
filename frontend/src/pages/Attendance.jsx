@@ -23,7 +23,8 @@ function Attendance() {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-const rowsPerPage = 10;
+  const rowsPerPage = 10;
+  const [selectedStudents, setSelectedStudents] = useState([]);
 
   // --------------------------------------------------
   // CREATE DEFAULT ATTENDANCE
@@ -90,68 +91,212 @@ const rowsPerPage = 10;
   // --------------------------------------------------
   // MARK ALL PRESENT
   // --------------------------------------------------
+const markAllPresent = async () => {
+  if (selectedStudents.length === 0) {
+    return;
+  }
 
-  const markAllPresent = () => {
-    setAttendance(createDefaultAttendance());
-    setSaved(false);
-  };
+  try {
+    setSaving(true);
+
+    const studentsToUpdate = students.filter((student) =>
+      selectedStudents.includes(student.id)
+    );
+
+    for (const student of studentsToUpdate) {
+      const existingRecord = attendanceRecords.find(
+        (record) =>
+          Number(record.studentId) === Number(student.id) &&
+          record.date?.split("T")[0] === selectedDate
+      );
+
+      if (existingRecord) {
+        await editAttendance(existingRecord.id, {
+          studentId: student.id,
+          date: selectedDate,
+          status: "Present",
+        });
+      } else {
+        await addAttendance({
+          studentId: student.id,
+          date: selectedDate,
+          status: "Present",
+        });
+      }
+    }
+
+    setAttendance((previous) => {
+      const updated = { ...previous };
+
+      studentsToUpdate.forEach((student) => {
+        updated[student.id] = "Present";
+      });
+
+      return updated;
+    });
+
+    setSelectedStudents([]);
+    setSaved(true);
+  } catch (error) {
+    console.error(
+      "Failed to mark students present:",
+      error
+    );
+  } finally {
+    setSaving(false);
+  }
+};
+
+const markAllAbsent = async () => {
+  if (selectedStudents.length === 0) {
+    return;
+  }
+
+  try {
+    setSaving(true);
+
+    const studentsToUpdate = students.filter((student) =>
+      selectedStudents.includes(student.id)
+    );
+
+    for (const student of studentsToUpdate) {
+      const existingRecord = attendanceRecords.find(
+        (record) =>
+          Number(record.studentId) === Number(student.id) &&
+          record.date?.split("T")[0] === selectedDate
+      );
+
+      if (existingRecord) {
+        await editAttendance(existingRecord.id, {
+          studentId: student.id,
+          date: selectedDate,
+          status: "Absent",
+        });
+      } else {
+        await addAttendance({
+          studentId: student.id,
+          date: selectedDate,
+          status: "Absent",
+        });
+      }
+    }
+
+    setAttendance((previous) => {
+      const updated = { ...previous };
+
+      studentsToUpdate.forEach((student) => {
+        updated[student.id] = "Absent";
+      });
+
+      return updated;
+    });
+
+    setSelectedStudents([]);
+    setSaved(true);
+  } catch (error) {
+    console.error(
+      "Failed to mark students absent:",
+      error
+    );
+  } finally {
+    setSaving(false);
+  }
+};
+
+const toggleStudentSelection = (studentId) => {
+  setSelectedStudents((previous) =>
+    previous.includes(studentId)
+      ? previous.filter((id) => id !== studentId)
+      : [...previous, studentId]
+  );
+};
+
+const toggleSelectAll = () => {
+  const pageStudentIds = paginatedStudents.map(
+    (student) => student.id
+  );
+
+  const allSelected = pageStudentIds.every((id) =>
+    selectedStudents.includes(id)
+  );
+
+  if (allSelected) {
+    setSelectedStudents((previous) =>
+      previous.filter(
+        (id) => !pageStudentIds.includes(id)
+      )
+    );
+  } else {
+    setSelectedStudents((previous) => [
+      ...new Set([
+        ...previous,
+        ...pageStudentIds,
+      ]),
+    ]);
+  }
+};
 
   // --------------------------------------------------
   // SAVE ATTENDANCE
   // --------------------------------------------------
 
-  const handleSaveAttendance = async () => {
-    try {
-      setSaving(true);
-      setSaved(false);
+const handleSaveAttendance = async () => {
+  try {
+    setSaving(true);
+    setSaved(false);
 
-      for (const student of students) {
-        const status =
-          attendance[student.id] || "Present";
+    for (const student of students) {
+      const status =
+        attendance[student.id] || "Present";
 
-        const existingRecord = attendanceRecords.find(
-          (record) => {
-            const recordDate =
-              record.date?.split("T")[0];
+      const existingRecord = attendanceRecords.find(
+        (record) => {
+          const recordDate =
+            record.date?.split("T")[0];
 
-            return (
-              Number(record.studentId) ===
-                Number(student.id) &&
-              recordDate === selectedDate
-            );
-          }
-        );
-
-        if (existingRecord) {
-          await editAttendance(
-            existingRecord.id,
-            {
-              studentId: student.id,
-              date: selectedDate,
-              status,
-            }
+          return (
+            Number(record.studentId) ===
+              Number(student.id) &&
+            recordDate === selectedDate
           );
-        } else {
-          await addAttendance({
+        }
+      );
+
+      if (existingRecord) {
+        await editAttendance(
+          existingRecord.id,
+          {
             studentId: student.id,
             date: selectedDate,
             status,
-          });
-        }
+          }
+        );
+      } else {
+        await addAttendance({
+          studentId: student.id,
+          date: selectedDate,
+          status,
+        });
       }
-
-      setSaved(true);
-    } catch (error) {
-      console.error(
-        "Failed to save attendance:",
-        error
-      );
-
-      alert("Failed to save attendance.");
-    } finally {
-      setSaving(false);
     }
-  };
+
+    setSaved(true);
+
+    // Clear all selected checkboxes after successful save
+    setSelectedStudents([]);
+
+  } catch (error) {
+    console.error(
+      "Failed to save attendance:",
+      error
+    );
+
+    alert("Failed to save attendance.");
+
+  } finally {
+    setSaving(false);
+  }
+};
 
   const totalPages = Math.ceil(
   students.length / rowsPerPage
@@ -163,6 +308,12 @@ const paginatedStudents = students.slice(
   startIndex,
   startIndex + rowsPerPage
 );
+
+const allPageStudentsSelected =
+  paginatedStudents.length > 0 &&
+  paginatedStudents.every((student) =>
+    selectedStudents.includes(student.id)
+  );
 
 useEffect(() => {
   if (totalPages === 0) {
@@ -239,16 +390,7 @@ useEffect(() => {
 
           <p className="mt-2 text-slate-500">
             Mark and manage student attendance.
-          </p>
-        </div>
-
-        <button
-          onClick={markAllPresent}
-          className="rounded-xl border border-indigo-200 bg-indigo-50 px-5 py-3 font-semibold text-indigo-600 transition hover:bg-indigo-100"
-        >
-          ✓ Mark All Present
-        </button>
-
+          </p>        </div>
       </div>
 
       {/* Summary Cards */}
@@ -333,6 +475,31 @@ useEffect(() => {
             </p>
           </div>
 
+          <div className="ml-auto flex flex-wrap gap-3">
+
+            <button
+  type="button"
+  disabled={
+    selectedStudents.length === 0 || saving
+  }
+  onClick={markAllPresent}
+  className="rounded-lg bg-green-100 px-4 py-2 text-sm font-medium text-green-700 transition hover:bg-green-200 disabled:cursor-not-allowed disabled:opacity-50"
+>
+  Mark All Present
+</button>
+
+<button
+  type="button"
+  disabled={
+    selectedStudents.length === 0 || saving
+  }
+  onClick={markAllAbsent}
+  className="rounded-lg bg-red-100 px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-200 disabled:cursor-not-allowed disabled:opacity-50"
+>
+  Mark All Absent
+</button>
+</div>
+
           {/* Date */}
 
           <input
@@ -346,12 +513,21 @@ useEffect(() => {
 
         {/* Table */}
 
-        <div className="mt-6 overflow-x-auto">
+        <div className="mt-10 overflow-x-auto">
 
           <table className="w-full">
 
             <thead>
               <tr className="border-b border-slate-200 text-center text-sm text-slate-500">
+
+                <th className="w-12 pb-4">
+      <input
+        type="checkbox"
+        checked={allPageStudentsSelected}
+        onChange={toggleSelectAll}
+        className="h-4 w-4 cursor-pointer rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+      />
+    </th>
 
                 <th className="pb-4  font-medium">
                   Student
@@ -381,6 +557,19 @@ useEffect(() => {
                   className="border-b border-slate-100"
                 >
 
+                  <td className="py-4 text-center">
+    <input
+      type="checkbox"
+      checked={selectedStudents.includes(
+        student.id
+      )}
+      onChange={() =>
+        toggleStudentSelection(student.id)
+      }
+      className="h-4 w-4 cursor-pointer rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+    />
+  </td>
+
                   <td className="py-4 font-medium text-center text-slate-900">
                     {student.name}
                   </td>
@@ -395,7 +584,7 @@ useEffect(() => {
 
                   <td className="py-4">
 
-                    <div className="flex item-center  gap-2">
+                    <div className="flex items-center gap-2">
 
                       <button
                         onClick={() =>

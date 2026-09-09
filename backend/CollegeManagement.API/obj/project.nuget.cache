@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "rRcjjtA4pR8=",
+  "dgSpecHash": "tILBhKa1wvg=",
   "success": true,
   "projectFilePath": "E:\\college-management-system\\backend\\CollegeManagement.API\\CollegeManagement.API.csproj",
   "expectedPackageFiles": [
@@ -60,7 +60,7 @@
     {
       "code": "NU1510",
       "level": "Warning",
-      "message": "PackageReference Microsoft.Extensions.Identity.Core will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
+      "message": "PackageReference Microsoft.Extensions.Identity.Core will not be pruned. This package is automatically available and does not need to be referenced explicitly. Remove the PackageReference item.",
       "projectPath": "E:\\college-management-system\\backend\\CollegeManagement.API\\CollegeManagement.API.csproj",
       "warningLevel": 1,
       "filePath": "E:\\college-management-system\\backend\\CollegeManagement.API\\CollegeManagement.API.csproj",
