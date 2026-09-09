@@ -196,3 +196,4 @@ E:\college-management-system\backend\CollegeManagement.API\obj\Debug\net10.0\ref
 E:\college-management-system\backend\CollegeManagement.API\obj\Debug\net10.0\CollegeManagement.API.pdb
 E:\college-management-system\backend\CollegeManagement.API\obj\Debug\net10.0\CollegeManagement.API.genruntimeconfig.cache
 E:\college-management-system\backend\CollegeManagement.API\obj\Debug\net10.0\ref\CollegeManagement.API.dll
+E:\college-management-system\backend\CollegeManagement.API\obj\Debug\net10.0\CollegeManagement.API.sourcelink.json
